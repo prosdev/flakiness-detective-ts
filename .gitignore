@@ -12,6 +12,17 @@ out
 
 # TypeScript
 *.tsbuildinfo
+# Compiled JavaScript files in source directories
+**/*.js
+**/*.js.map
+**/*.d.ts
+**/*.d.ts.map
+# But keep any intentional JavaScript files
+!jest.config.js
+!commitlint.config.js
+!.eslintrc.js
+!vitest.config.js
+!*.setup.js
 
 # Testing
 coverage

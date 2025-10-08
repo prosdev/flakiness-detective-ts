@@ -5,10 +5,9 @@
     "strict": false,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
-    "moduleResolution": "Node16",
-    "module": "NodeNext",
+    "moduleResolution": "node16",
+    "module": "nodenext",
     "declaration": true,
-    "composite": true,
     "declarationMap": true,
     "sourceMap": true,
     "lib": ["ES2022", "DOM"],
@@ -17,20 +16,28 @@
     "esModuleInterop": true,
     "baseUrl": ".",
     "paths": {
-      "@flakiness-detective/core": ["packages/core/src"],
-      "@flakiness-detective/core/*": ["packages/core/src/*"],
-      "@flakiness-detective/utils": ["packages/utils/src"],
-      "@flakiness-detective/utils/*": ["packages/utils/src/*"],
-      "@flakiness-detective/analyzer": ["packages/analyzer/src"],
-      "@flakiness-detective/analyzer/*": ["packages/analyzer/src/*"],
-      "@flakiness-detective/adapters": ["packages/adapters/src"],
-      "@flakiness-detective/adapters/*": ["packages/adapters/src/*"],
-      "@flakiness-detective/visualization": ["packages/visualization/src"],
-      "@flakiness-detective/visualization/*": ["packages/visualization/src/*"],
-      "@flakiness-detective/cli": ["packages/cli/src"],
-      "@flakiness-detective/cli/*": ["packages/cli/src/*"]
+      "@flakiness-detective/core": ["packages/core/dist"],
+      "@flakiness-detective/core/*": ["packages/core/dist/*"],
+      "@flakiness-detective/utils": ["packages/utils/dist"],
+      "@flakiness-detective/utils/*": ["packages/utils/dist/*"],
+      "@flakiness-detective/analyzer": ["packages/analyzer/dist"],
+      "@flakiness-detective/analyzer/*": ["packages/analyzer/dist/*"],
+      "@flakiness-detective/adapters": ["packages/adapters/dist"],
+      "@flakiness-detective/adapters/*": ["packages/adapters/dist/*"],
+      "@flakiness-detective/visualization": ["packages/visualization/dist"],
+      "@flakiness-detective/visualization/*": ["packages/visualization/dist/*"],
+      "@flakiness-detective/cli": ["packages/cli/dist"],
+      "@flakiness-detective/cli/*": ["packages/cli/dist/*"]
     }
   },
   "exclude": ["node_modules"],
-  "files": []
+  "files": [],
+  "references": [
+    { "path": "./packages/utils" },
+    { "path": "./packages/core" },
+    { "path": "./packages/adapters" },
+    { "path": "./packages/analyzer" },
+    { "path": "./packages/visualization" },
+    { "path": "./packages/cli" }
+  ]
 }
