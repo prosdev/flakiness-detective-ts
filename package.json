@@ -1,6 +1,7 @@
 {
-  "name": "ts-monorepo",
+  "name": "flakiness-detective-ts",
   "version": "0.1.0",
+  "description": "A TypeScript monorepo for detecting test flakiness",
   "private": true,
   "workspaces": [
     "packages/*"

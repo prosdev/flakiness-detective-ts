@@ -1,5 +1,5 @@
 {
-  "name": "@monorepo/utils",
+  "name": "@flakiness-detective/utils",
   "version": "0.1.0",
   "private": true,
   "main": "./dist/index.js",
@@ -22,7 +22,7 @@
     "test:watch": "vitest"
   },
   "dependencies": {
-    "@monorepo/core": "workspace:*"
+    "@flakiness-detective/core": "workspace:*"
   },
   "devDependencies": {
     "typescript": "^5.3.3"
