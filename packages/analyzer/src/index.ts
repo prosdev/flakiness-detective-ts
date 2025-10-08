@@ -1,28 +1,28 @@
-import { CoreService, CoreConfig } from '@monorepo/core';
-import { Logger, createLogger } from '@monorepo/utils';
+import { CoreService, CoreConfig } from '@flakiness-detective/core';
+import { Logger, createLogger } from '@flakiness-detective/utils';
 
-export interface FeatureConfig extends CoreConfig {
-  featureName: string;
+export interface AnalyzerConfig extends CoreConfig {
+  analyzerName: string;
 }
 
-export class FeatureService {
+export class AnalyzerService {
   private coreService: CoreService;
   private logger: Logger;
   private name: string;
 
-  constructor(config: FeatureConfig) {
+  constructor(config: AnalyzerConfig) {
     this.coreService = new CoreService(config);
     this.logger = createLogger(this.coreService, { level: 'info' });
-    this.name = config.featureName;
+    this.name = config.analyzerName;
   }
 
   start(): void {
     this.coreService.initialize();
-    this.logger.log(`Feature ${this.name} started`);
+    this.logger.log(`Analyzer ${this.name} started`);
     this.logger.log(this.logger.getServiceInfo());
   }
 }
 
-export function createFeature(config: FeatureConfig): FeatureService {
-  return new FeatureService(config);
+export function createAnalyzer(config: AnalyzerConfig): AnalyzerService {
+  return new AnalyzerService(config);
 }

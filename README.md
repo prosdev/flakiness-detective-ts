@@ -1,13 +1,21 @@
-# TypeScript Monorepo Starter
+# Flakiness Detective
 
 [![Node.js](https://img.shields.io/badge/node-%3E%3D22-brightgreen.svg)](https://nodejs.org/)
 [![pnpm](https://img.shields.io/badge/pnpm-8.15.4-orange.svg)](https://pnpm.io/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-A modern TypeScript monorepo starter template with best practices for scalable projects.
+An AI-powered test flakiness detection and analysis tool that helps identify and resolve flaky tests in your CI/CD pipeline.
 
 ## Features
 
+### Flakiness Detection
+- 🤖 AI-powered embeddings for semantic test failure analysis
+- 🔍 Density-based clustering (DBSCAN) to identify failure patterns
+- ⏰ Configurable time windows for failure analysis
+- 🔄 Framework-agnostic design with adapters for different test runners
+- 📊 Visualization tools for failure analysis and reporting
+
+### Technical Stack
 - 📦 [PNPM](https://pnpm.io/) for fast, disk-efficient package management
 - 🏎️ [Turborepo](https://turbo.build/repo) for high-performance build system
 - 🔍 [Biome](https://biomejs.dev/) for fast linting and formatting
@@ -21,14 +29,17 @@ A modern TypeScript monorepo starter template with best practices for scalable p
 ## Project Structure
 
 ```
-ts-monorepo/
+flakiness-detective-ts/
 ├── .changeset/          # Changesets configuration
 ├── .github/             # GitHub Actions workflows
 ├── .husky/              # Git hooks
 ├── packages/            # All packages
-│   ├── core/            # Core package
-│   ├── utils/           # Utilities package
-│   └── feature-a/       # Feature package
+│   ├── core/            # Core algorithms and interfaces
+│   ├── utils/           # Shared utilities
+│   ├── adapters/        # Data storage and AI provider adapters
+│   ├── analyzer/        # Test analysis and pattern detection
+│   ├── visualization/   # Result visualization components
+│   └── cli/             # Command-line interface
 ├── biome.json           # Biome configuration
 ├── commitlint.config.js # Commitlint configuration
 ├── package.json         # Root package.json
@@ -49,8 +60,8 @@ ts-monorepo/
 
 1. Clone this repository
    ```bash
-   git clone https://github.com/yourusername/ts-monorepo.git
-   cd ts-monorepo
+   git clone https://github.com/prosdev/flakiness-detective-ts.git
+   cd flakiness-detective-ts
    ```
 
 2. Install dependencies
@@ -72,7 +83,7 @@ ts-monorepo/
 pnpm test
 
 # Run tests in watch mode
-pnpm -F "@monorepo/core" test:watch
+pnpm -F "@flakiness-detective/core" test:watch
 ```
 
 #### Linting and Formatting
@@ -92,7 +103,7 @@ pnpm format
 pnpm build
 
 # Build a specific package
-pnpm -F "@monorepo/core" build
+pnpm -F "@flakiness-detective/core" build
 ```
 
 ### Making Changes
@@ -156,7 +167,7 @@ Packages can depend on each other using the workspace protocol:
 
 ```json
 "dependencies": {
-  "@monorepo/core": "workspace:*"
+  "@flakiness-detective/core": "workspace:*"
 }
 ```
 
@@ -172,7 +183,7 @@ This template follows [Semantic Versioning](https://semver.org/) at the reposito
 - **MINOR**: New features, examples, or improvements
 - **PATCH**: Bug fixes, documentation updates
 
-See [AGENTS.md](AGENTS.md) for detailed versioning strategy.
+See [AGENTS.md](AGENTS.md) for detailed versioning strategy and [CLAUDE.md](CLAUDE.md) for AI agent configuration.
 
 ## License
 

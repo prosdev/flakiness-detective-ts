@@ -1,4 +1,4 @@
-import { CoreService } from '@monorepo/core';
+import { CoreService } from '@flakiness-detective/core';
 
 export interface LoggerConfig {
   level: 'debug' | 'info' | 'warn' | 'error';
