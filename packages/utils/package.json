@@ -22,7 +22,6 @@
     "test:watch": "vitest"
   },
   "dependencies": {
-    "@flakiness-detective/core": "workspace:*"
   },
   "devDependencies": {
     "typescript": "^5.3.3"
