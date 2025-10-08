@@ -50,6 +50,9 @@ importers:
       '@flakiness-detective/utils':
         specifier: workspace:*
         version: link:../utils
+      '@google/generative-ai':
+        specifier: ^0.24.1
+        version: 0.24.1
     devDependencies:
       typescript:
         specifier: ^5.3.3
@@ -819,6 +822,11 @@ packages:
     requiresBuild: true
     dev: true
     optional: true
+
+  /@google/generative-ai@0.24.1:
+    resolution: {integrity: sha512-MqO+MLfM6kjxcKoy0p1wRzG3b4ZZXtPI+z2IE26UogS2Cm/XHO+7gGRBh6gcJsOiIVoH93UwKvW4HdgiOZCy9Q==}
+    engines: {node: '>=18.0.0'}
+    dev: false
 
   /@inquirer/external-editor@1.0.2(@types/node@24.7.0):
     resolution: {integrity: sha512-yy9cOoBnx58TlsPrIxauKIFQTiyH+0MK4e97y4sV9ERbI+zDxw7i2hxHLCIEGIE/8PPvDxGhgzIOTSOWcs6/MQ==}
