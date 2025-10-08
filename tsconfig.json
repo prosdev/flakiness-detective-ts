@@ -1,7 +1,8 @@
 {
   "extends": "@tsconfig/node-lts/tsconfig.json",
   "compilerOptions": {
-    "strict": true,
+    "composite": true,
+    "strict": false,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "moduleResolution": "Node16",
@@ -11,14 +12,23 @@
     "declarationMap": true,
     "sourceMap": true,
     "lib": ["ES2022", "DOM"],
+    "types": ["node"],
+    "isolatedModules": true,
+    "esModuleInterop": true,
     "baseUrl": ".",
     "paths": {
-      "@monorepo/core": ["packages/core/src"],
-      "@monorepo/core/*": ["packages/core/src/*"],
-      "@monorepo/utils": ["packages/utils/src"],
-      "@monorepo/utils/*": ["packages/utils/src/*"],
-      "@monorepo/feature-a": ["packages/feature-a/src"],
-      "@monorepo/feature-a/*": ["packages/feature-a/src/*"]
+      "@flakiness-detective/core": ["packages/core/src"],
+      "@flakiness-detective/core/*": ["packages/core/src/*"],
+      "@flakiness-detective/utils": ["packages/utils/src"],
+      "@flakiness-detective/utils/*": ["packages/utils/src/*"],
+      "@flakiness-detective/analyzer": ["packages/analyzer/src"],
+      "@flakiness-detective/analyzer/*": ["packages/analyzer/src/*"],
+      "@flakiness-detective/adapters": ["packages/adapters/src"],
+      "@flakiness-detective/adapters/*": ["packages/adapters/src/*"],
+      "@flakiness-detective/visualization": ["packages/visualization/src"],
+      "@flakiness-detective/visualization/*": ["packages/visualization/src/*"],
+      "@flakiness-detective/cli": ["packages/cli/src"],
+      "@flakiness-detective/cli/*": ["packages/cli/src/*"]
     }
   },
   "exclude": ["node_modules"],

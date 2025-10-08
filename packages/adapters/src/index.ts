@@ -1,6 +1,19 @@
+// Data Adapters
+export { BaseDataAdapter } from './data-adapters/base-adapter';
+
+import { FilesystemAdapter } from './data-adapters/filesystem-adapter';
+// Import directly rather than re-exporting
+import { InMemoryAdapter } from './data-adapters/in-memory-adapter';
+export type { FilesystemAdapterConfig } from './data-adapters/filesystem-adapter';
+
+// Embedding Providers
+export { BaseEmbeddingProvider } from './embedding-providers/base-provider';
+import { MockEmbeddingProvider } from './embedding-providers/mock-provider';
+
 // Import dependencies
 import { Logger } from '@flakiness-detective/utils';
 
+// Configuration interfaces
 export interface DataAdapterConfig {
   type: 'filesystem' | 'memory' | 'firestore';
   path?: string;
@@ -8,50 +21,28 @@ export interface DataAdapterConfig {
 }
 
 export interface EmbeddingProviderConfig {
-  type: 'google' | 'custom';
-  apiKey: string;
+  type: 'google' | 'mock' | 'custom';
+  apiKey?: string;
+  dimensions?: number;
 }
 
-export class DataAdapter {
-  private config: DataAdapterConfig;
-  private logger: Logger;
-
-  constructor(config: DataAdapterConfig, logger: Logger) {
-    this.config = config;
-    this.logger = logger;
-  }
-
-  async initialize(): Promise<void> {
-    this.logger.log(`Initializing ${this.config.type} data adapter`);
-  }
-}
-
-export class EmbeddingProvider {
-  private config: EmbeddingProviderConfig;
-  private logger: Logger;
-
-  constructor(config: EmbeddingProviderConfig, logger: Logger) {
-    this.config = config;
-    this.logger = logger;
-  }
-
-  async initialize(): Promise<void> {
-    this.logger.log(`Initializing ${this.config.type} embedding provider`);
-  }
-
-  async getEmbedding(_text: string): Promise<number[]> {
-    // Placeholder for actual embedding logic
-    return [0, 0, 0];
+// Factory functions
+export function createDataAdapter(config: DataAdapterConfig, logger: Logger) {
+  switch (config.type) {
+    case 'memory':
+      return new InMemoryAdapter(logger);
+    case 'filesystem':
+      return new FilesystemAdapter({ dataDir: config.path || './data' }, logger);
+    default:
+      throw new Error(`Unsupported data adapter type: ${config.type}`);
   }
 }
 
-export function createDataAdapter(config: DataAdapterConfig, logger: Logger): DataAdapter {
-  return new DataAdapter(config, logger);
-}
-
-export function createEmbeddingProvider(
-  config: EmbeddingProviderConfig,
-  logger: Logger
-): EmbeddingProvider {
-  return new EmbeddingProvider(config, logger);
+export function createEmbeddingProvider(config: EmbeddingProviderConfig, logger: Logger) {
+  switch (config.type) {
+    case 'mock':
+      return new MockEmbeddingProvider(logger, config.dimensions || 128);
+    default:
+      throw new Error(`Unsupported embedding provider type: ${config.type}`);
+  }
 }

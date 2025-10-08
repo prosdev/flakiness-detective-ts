@@ -24,7 +24,7 @@ export class FlakinessDetectiveCli {
   constructor(config: CliConfig, coreService: CoreService) {
     this.config = config;
     this.coreService = coreService;
-    this.logger = createLogger(coreService, { level: 'info' });
+    this.logger = createLogger({ level: 'info' });
   }
 
   async run(): Promise<void> {

@@ -1,4 +1,4 @@
-import { CoreService, CoreConfig } from '@flakiness-detective/core';
+import { CoreConfig, CoreService } from '@flakiness-detective/core';
 import { Logger, createLogger } from '@flakiness-detective/utils';
 
 export interface AnalyzerConfig extends CoreConfig {
@@ -12,14 +12,15 @@ export class AnalyzerService {
 
   constructor(config: AnalyzerConfig) {
     this.coreService = new CoreService(config);
-    this.logger = createLogger(this.coreService, { level: 'info' });
+    this.logger = createLogger({ level: 'info' });
     this.name = config.analyzerName;
   }
 
   start(): void {
     this.coreService.initialize();
     this.logger.log(`Analyzer ${this.name} started`);
-    this.logger.log(this.logger.getServiceInfo());
+    // Logger no longer depends on CoreService
+    this.logger.log(`Using analyzer: ${this.name}`);
   }
 }
 

@@ -5,6 +5,14 @@
   },
   "linter": {
     "enabled": true,
+    "ignore": [
+      "**/*.js",
+      "**/*.d.ts",
+      "**/*.js.map",
+      "**/*.d.ts.map",
+      "node_modules",
+      "dist"
+    ],
     "rules": {
       "recommended": true,
       "correctness": {

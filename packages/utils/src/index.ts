@@ -1,4 +1,4 @@
-import { CoreService } from '@flakiness-detective/core';
+// Independent logger without circular dependencies
 
 export interface LoggerConfig {
   level: 'debug' | 'info' | 'warn' | 'error';
@@ -6,22 +6,16 @@ export interface LoggerConfig {
 
 export class Logger {
   private level: string;
-  private coreService: CoreService;
 
-  constructor(coreService: CoreService, config: LoggerConfig) {
-    this.coreService = coreService;
+  constructor(config: LoggerConfig) {
     this.level = config.level;
   }
 
   log(message: string): void {
     console.log(`[${this.level.toUpperCase()}] ${message}`);
   }
-
-  getServiceInfo(): string {
-    return `Logger using API Key: ${this.coreService.getApiKey()}`;
-  }
 }
 
-export function createLogger(coreService: CoreService, config: LoggerConfig): Logger {
-  return new Logger(coreService, config);
+export function createLogger(config: LoggerConfig): Logger {
+  return new Logger(config);
 }

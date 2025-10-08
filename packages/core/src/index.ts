@@ -1,32 +1,20 @@
+// Export all types and interfaces
+export * from './types';
+import { TestFailure } from './types';
+
+// Export FlakinessDetective class
+export { FlakinessDetective } from './flakiness-detective';
+
+// Export clustering functionality
+export { clusterFailures } from './clustering/dbscan';
+
+// Export utility functions
+export { extractPatterns, createRichEmbeddingContext } from './utils/pattern-extraction';
+
+// Legacy types (for backward compatibility)
 export interface CoreConfig {
   apiKey: string;
   debug: boolean;
-  timeWindow: number;
-  clusteringParams: {
-    epsilon: number;
-    minPoints: number;
-  };
-}
-
-export interface TestFailure {
-  id: string;
-  name: string;
-  message: string;
-  stack?: string;
-  timestamp: number;
-  metadata?: Record<string, unknown>;
-}
-
-export interface EmbeddedFailure extends TestFailure {
-  embedding: number[];
-}
-
-export interface FailureCluster {
-  id: string;
-  failures: EmbeddedFailure[];
-  centroid: number[];
-  radius: number;
-  pattern?: string;
 }
 
 export class CoreService {
@@ -46,21 +34,13 @@ export class CoreService {
     return this.config.apiKey;
   }
 
-  async clusterFailures(failures: EmbeddedFailure[]): Promise<FailureCluster[]> {
+  async clusterFailures(failures: TestFailure[]): Promise<TestFailure[]> {
     // Placeholder for DBSCAN clustering algorithm
     // This would implement the actual clustering logic
-    return [
-      {
-        id: '1',
-        failures: failures,
-        centroid: [0, 0, 0],
-        radius: 0.5,
-        pattern: 'Example pattern',
-      },
-    ];
+    return failures;
   }
 
-  async detectPatterns(_cluster: FailureCluster): Promise<string> {
+  async detectPatterns(_cluster: TestFailure[]): Promise<string> {
     // Placeholder for pattern detection
     return 'Example pattern detected';
   }
