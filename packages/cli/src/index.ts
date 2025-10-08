@@ -1,8 +1,6 @@
 import { CoreService } from '@flakiness-detective/core';
-import { DataAdapter, EmbeddingProvider } from '@flakiness-detective/adapters';
-import { AnalyzerService } from '@flakiness-detective/analyzer';
-import { Logger, createLogger } from '@flakiness-detective/utils';
-import { Visualizer } from '@flakiness-detective/visualization';
+import { createLogger } from '@flakiness-detective/utils';
+import type { Logger } from '@flakiness-detective/utils';
 
 export interface CliConfig {
   command: 'analyze' | 'report' | 'help';
@@ -31,7 +29,7 @@ export class FlakinessDetectiveCli {
 
   async run(): Promise<void> {
     this.logger.log(`Running CLI command: ${this.config.command}`);
-    
+
     // Placeholder for actual CLI logic
     switch (this.config.command) {
       case 'analyze':
@@ -40,8 +38,7 @@ export class FlakinessDetectiveCli {
       case 'report':
         this.logger.log('Generating report');
         break;
-      case 'help':
-      default:
+      default: // includes 'help'
         this.logger.log('Showing help information');
         break;
     }

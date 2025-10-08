@@ -1,4 +1,4 @@
-import { CoreService } from '@flakiness-detective/core';
+// Import dependencies
 import { Logger } from '@flakiness-detective/utils';
 
 export interface DataAdapterConfig {
@@ -39,22 +39,19 @@ export class EmbeddingProvider {
     this.logger.log(`Initializing ${this.config.type} embedding provider`);
   }
 
-  async getEmbedding(text: string): Promise<number[]> {
+  async getEmbedding(_text: string): Promise<number[]> {
     // Placeholder for actual embedding logic
     return [0, 0, 0];
   }
 }
 
-export function createDataAdapter(
-  config: DataAdapterConfig,
-  logger: Logger,
-): DataAdapter {
+export function createDataAdapter(config: DataAdapterConfig, logger: Logger): DataAdapter {
   return new DataAdapter(config, logger);
 }
 
 export function createEmbeddingProvider(
   config: EmbeddingProviderConfig,
-  logger: Logger,
+  logger: Logger
 ): EmbeddingProvider {
   return new EmbeddingProvider(config, logger);
 }

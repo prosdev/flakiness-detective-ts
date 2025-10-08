@@ -1,5 +1,4 @@
-import { CoreService } from '@flakiness-detective/core';
-import { AnalyzerService } from '@flakiness-detective/analyzer';
+import type { FailureCluster } from '@flakiness-detective/core';
 import { Logger } from '@flakiness-detective/utils';
 
 export interface VisualizationConfig {
@@ -20,15 +19,12 @@ export class Visualizer {
     this.logger.log(`Initializing ${this.config.format} visualizer`);
   }
 
-  visualizeResults(results: any): string {
+  visualizeResults(_results: FailureCluster[]): string {
     // Placeholder for actual visualization logic
     return `Visualization in ${this.config.format} format`;
   }
 }
 
-export function createVisualizer(
-  config: VisualizationConfig,
-  logger: Logger,
-): Visualizer {
+export function createVisualizer(config: VisualizationConfig, logger: Logger): Visualizer {
   return new Visualizer(config, logger);
 }

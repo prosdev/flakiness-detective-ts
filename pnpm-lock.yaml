@@ -39,18 +39,12 @@ importers:
         specifier: ^1.2.1
         version: 1.6.1(@types/node@24.7.0)
 
-  packages/core:
-    devDependencies:
-      typescript:
-        specifier: ^5.3.3
-        version: 5.9.3
-
-  packages/feature-a:
+  packages/adapters:
     dependencies:
-      '@monorepo/core':
+      '@flakiness-detective/core':
         specifier: workspace:*
         version: link:../core
-      '@monorepo/utils':
+      '@flakiness-detective/utils':
         specifier: workspace:*
         version: link:../utils
     devDependencies:
@@ -58,11 +52,68 @@ importers:
         specifier: ^5.3.3
         version: 5.9.3
 
-  packages/utils:
+  packages/analyzer:
     dependencies:
-      '@monorepo/core':
+      '@flakiness-detective/core':
         specifier: workspace:*
         version: link:../core
+      '@flakiness-detective/utils':
+        specifier: workspace:*
+        version: link:../utils
+    devDependencies:
+      typescript:
+        specifier: ^5.3.3
+        version: 5.9.3
+
+  packages/cli:
+    dependencies:
+      '@flakiness-detective/adapters':
+        specifier: workspace:*
+        version: link:../adapters
+      '@flakiness-detective/analyzer':
+        specifier: workspace:*
+        version: link:../analyzer
+      '@flakiness-detective/core':
+        specifier: workspace:*
+        version: link:../core
+      '@flakiness-detective/utils':
+        specifier: workspace:*
+        version: link:../utils
+      '@flakiness-detective/visualization':
+        specifier: workspace:*
+        version: link:../visualization
+    devDependencies:
+      typescript:
+        specifier: ^5.3.3
+        version: 5.9.3
+
+  packages/core:
+    devDependencies:
+      typescript:
+        specifier: ^5.3.3
+        version: 5.9.3
+
+  packages/utils:
+    dependencies:
+      '@flakiness-detective/core':
+        specifier: workspace:*
+        version: link:../core
+    devDependencies:
+      typescript:
+        specifier: ^5.3.3
+        version: 5.9.3
+
+  packages/visualization:
+    dependencies:
+      '@flakiness-detective/analyzer':
+        specifier: workspace:*
+        version: link:../analyzer
+      '@flakiness-detective/core':
+        specifier: workspace:*
+        version: link:../core
+      '@flakiness-detective/utils':
+        specifier: workspace:*
+        version: link:../utils
     devDependencies:
       typescript:
         specifier: ^5.3.3

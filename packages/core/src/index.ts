@@ -14,7 +14,7 @@ export interface TestFailure {
   message: string;
   stack?: string;
   timestamp: number;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }
 
 export interface EmbeddedFailure extends TestFailure {
@@ -45,7 +45,7 @@ export class CoreService {
   getApiKey(): string {
     return this.config.apiKey;
   }
-  
+
   async clusterFailures(failures: EmbeddedFailure[]): Promise<FailureCluster[]> {
     // Placeholder for DBSCAN clustering algorithm
     // This would implement the actual clustering logic
@@ -55,12 +55,12 @@ export class CoreService {
         failures: failures,
         centroid: [0, 0, 0],
         radius: 0.5,
-        pattern: 'Example pattern'
-      }
+        pattern: 'Example pattern',
+      },
     ];
   }
-  
-  async detectPatterns(cluster: FailureCluster): Promise<string> {
+
+  async detectPatterns(_cluster: FailureCluster): Promise<string> {
     // Placeholder for pattern detection
     return 'Example pattern detected';
   }
