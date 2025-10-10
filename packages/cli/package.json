@@ -1,15 +1,45 @@
 {
   "name": "@flakiness-detective/cli",
   "version": "0.1.0",
-  "private": true,
+  "description": "Command-line interface for Flakiness Detective - Detect and analyze flaky tests from the terminal",
+  "keywords": [
+    "testing",
+    "flakiness",
+    "test-automation",
+    "cli",
+    "playwright",
+    "command-line"
+  ],
+  "author": "prosdevlab",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/prosdev/flakiness-detective-ts.git",
+    "directory": "packages/cli"
+  },
+  "homepage": "https://github.com/prosdev/flakiness-detective-ts/tree/main/packages/cli#readme",
+  "bugs": {
+    "url": "https://github.com/prosdev/flakiness-detective-ts/issues"
+  },
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
+  "bin": {
+    "flakiness-detective": "./dist/index.js"
+  },
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js",
       "require": "./dist/index.js"
     }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "publishConfig": {
+    "access": "public"
   },
   "scripts": {
     "build": "tsc",
@@ -22,13 +52,14 @@
     "test:watch": "vitest"
   },
   "dependencies": {
-    "@flakiness-detective/core": "workspace:*",
-    "@flakiness-detective/adapters": "workspace:*",
-    "@flakiness-detective/analyzer": "workspace:*",
-    "@flakiness-detective/utils": "workspace:*",
-    "@flakiness-detective/visualization": "workspace:*"
+    "@flakiness-detective/core": "^0.1.0",
+    "@flakiness-detective/adapters": "^0.1.0",
+    "@flakiness-detective/utils": "^0.1.0"
   },
   "devDependencies": {
     "typescript": "^5.3.3"
+  },
+  "engines": {
+    "node": ">=22"
   }
 }
