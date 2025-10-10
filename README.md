@@ -185,7 +185,7 @@ const failures = await adapter.fetchFailures(7);
 console.log(`Found ${failures.length} test failures`);
 ```
 
-#### Using CLI (Coming Soon)
+#### Using CLI
 
 ```bash
 # Detect flakiness from Playwright reports
@@ -203,7 +203,127 @@ flakiness-detective report \
   --output-path ./flakiness-report.json
 ```
 
+### Configuration Files
+
+Flakiness Detective supports configuration files to simplify setup and avoid repetitive CLI arguments. Config files are discovered automatically in the current directory or parent directories.
+
+#### Supported Config Files (in priority order)
+
+1. **`.flakinessrc.json`** - JSON configuration (recommended)
+2. **`.flakinessrc.js`** - JavaScript configuration
+3. **`flakiness-detective.config.js`** - Alternative JS config
+4. **`.flakinessrc.ts`** - TypeScript configuration
+5. **`flakiness-detective.config.ts`** - Alternative TS config
+6. **`package.json`** - Inline config in `flakinessDetective` field
+
+#### Example: `.flakinessrc.json`
+
+```json
+{
+  "timeWindow": {
+    "days": 7
+  },
+  "adapter": {
+    "type": "playwright",
+    "reportPath": "./test-results/results.json"
+  },
+  "embedding": {
+    "type": "google",
+    "apiKey": "${GOOGLE_AI_API_KEY}"
+  },
+  "clustering": {
+    "epsilon": 0.15,
+    "minPoints": 2,
+    "minClusterSize": 2,
+    "distance": "cosine",
+    "maxClusters": 5
+  },
+  "output": {
+    "format": "console"
+  },
+  "verbose": false
+}
+```
+
+#### Example: `flakiness-detective.config.ts`
+
+```typescript
+import type { FlakinessDetectiveConfigFile } from '@flakiness-detective/cli';
+
+const config: FlakinessDetectiveConfigFile = {
+  timeWindow: { days: 14 },
+  adapter: {
+    type: 'firestore',
+    projectId: process.env.GOOGLE_CLOUD_PROJECT_ID,
+    failuresCollection: 'test_failures',
+    clustersCollection: 'flaky_clusters',
+  },
+  embedding: {
+    type: 'google',
+    apiKey: process.env.GOOGLE_AI_API_KEY,
+  },
+  clustering: {
+    epsilon: 0.15,
+    distance: 'cosine',
+    maxClusters: 10,
+  },
+  output: {
+    format: 'json',
+    path: './flakiness-report.json',
+  },
+  verbose: true,
+};
+
+export default config;
+```
+
+#### Example: `package.json` inline config
+
+```json
+{
+  "name": "my-project",
+  "flakinessDetective": {
+    "timeWindow": { "days": 7 },
+    "adapter": {
+      "type": "playwright",
+      "reportPath": "./test-results/results.json"
+    },
+    "embedding": {
+      "type": "google",
+      "apiKey": "${GOOGLE_AI_API_KEY}"
+    },
+    "clustering": {
+      "epsilon": 0.15,
+      "maxClusters": 5
+    }
+  }
+}
+```
+
+#### CLI Arguments Override Config Files
+
+When both a config file and CLI arguments are provided, CLI arguments take precedence:
+
+```bash
+# Uses config file but overrides epsilon and maxClusters
+flakiness-detective detect \
+  --epsilon 0.2 \
+  --max-clusters 10
+```
+
+#### Config Validation
+
+Config files are validated automatically with helpful error messages:
+
+```
+Config validation error in .flakinessrc.json:
+  Invalid clustering.epsilon: must be a positive number
+  Details: Got: -0.1
+```
+
 ## 📘 Documentation
+
+### Package Documentation
 
 - **[Core Package README](packages/core/README.md)**: Complete guide to the core package, including:
   - Detailed configuration options
@@ -211,6 +331,16 @@ flakiness-detective report \
   - Pattern extraction details
   - API reference
   - Migration guide from internal implementation
+- **[CLI Package README](packages/cli/README.md)**: Command-line interface guide, including:
+  - CLI commands and options
+  - Configuration file formats and examples
+  - CI/CD integration examples
+  - Programmatic usage
+  - Troubleshooting guide
+
+### Project Documentation
+
+- **[ROADMAP.md](ROADMAP.md)**: Future development plans and features
 - **[AGENTS.md](AGENTS.md)**: Repository structure and monorepo guidelines
 - **[CLAUDE.md](CLAUDE.md)**: AI assistant configuration and project context
 - **[CONTRIBUTING.md](CONTRIBUTING.md)**: How to contribute to this project

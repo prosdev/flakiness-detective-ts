@@ -12,3 +12,7 @@ fi
 
 # Run TypeScript type check
 npm run typecheck
+
+# Validate documentation links
+echo "Checking documentation links..."
+npm run validate:links

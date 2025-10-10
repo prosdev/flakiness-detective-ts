@@ -21,6 +21,9 @@ const filesToCheck = [
   'CLAUDE.md',
   'CONTRIBUTING.md',
   'packages/core/README.md',
+  'packages/cli/README.md',
+  'packages/adapters/README.md',
+  'packages/utils/README.md',
 ];
 
 // Regex patterns for different link types
@@ -106,13 +109,13 @@ function checkMarkdownFile(filePath: string): void {
       }
       // Check relative paths with directories
       else if (linkTarget.includes('/') && !linkTarget.startsWith('http')) {
-        // Handle paths like packages/core/README.md
-        const targetPath = path.resolve(process.cwd(), linkTarget);
+        // Handle paths like ../core/README.md or packages/core/README.md
+        const targetPath = path.resolve(path.dirname(fullPath), linkTarget);
 
         if (!fs.existsSync(targetPath)) {
           console.error(`${RED}✗${RESET} ${filePath}:${lineNum} - Broken link: ${linkTarget}`);
           console.error(`  Link text: "${linkText}"`);
-          console.error(`  Expected path: ${linkTarget}\n`);
+          console.error(`  Expected path: ${path.relative(process.cwd(), targetPath)}\n`);
           errors++;
           fileErrors++;
         }

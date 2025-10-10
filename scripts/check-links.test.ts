@@ -18,6 +18,9 @@ describe('Link Checker', () => {
     expect(stripped).toContain('✓ CLAUDE.md');
     expect(stripped).toContain('✓ CONTRIBUTING.md');
     expect(stripped).toContain('✓ packages/core/README.md');
+    expect(stripped).toContain('✓ packages/cli/README.md');
+    expect(stripped).toContain('✓ packages/adapters/README.md');
+    expect(stripped).toContain('✓ packages/utils/README.md');
   });
 
   it('should check that the validate:links script exists and is executable', () => {

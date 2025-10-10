@@ -4,6 +4,14 @@ import { FlakinessDetective } from '@flakiness-detective/core';
 import type { FailureCluster, FlakinessDetectiveConfig } from '@flakiness-detective/core';
 import { createLogger } from '@flakiness-detective/utils';
 import type { Logger } from '@flakiness-detective/utils';
+import {
+  ConfigValidationError,
+  discoverAndLoadConfig,
+  discoverConfigFile,
+  mergeConfigWithCliArgs,
+  validateAndGetConfig,
+} from './config/index.js';
+import type { FlakinessDetectiveConfigFile } from './config/index.js';
 
 /**
  * CLI configuration interface
@@ -282,3 +290,65 @@ Examples:
 export function createCli(config: CliConfig): FlakinessDetectiveCli {
   return new FlakinessDetectiveCli(config);
 }
+
+/**
+ * Creates CLI instance with config file support
+ * Merges config file (if found) with CLI arguments
+ * CLI arguments take precedence over config file
+ */
+export async function createCliWithConfigFile(
+  cliArgs: Partial<CliConfig>,
+  configDir?: string
+): Promise<FlakinessDetectiveCli> {
+  let fileConfig: FlakinessDetectiveConfigFile | null = null;
+
+  try {
+    // Try to discover and load config file
+    fileConfig = await discoverAndLoadConfig(configDir);
+
+    if (fileConfig) {
+      // Validate config file
+      const result = discoverConfigFile(configDir);
+      if (result) {
+        validateAndGetConfig(fileConfig, result.filePath);
+      }
+    }
+  } catch (error) {
+    if (error instanceof ConfigValidationError) {
+      console.error(`\nConfig validation error in ${error.filePath}:`);
+      console.error(`  ${error.message}`);
+      if (error.details) {
+        console.error(`  Details: ${error.details}`);
+      }
+      console.error('');
+      process.exit(1);
+    }
+    // If config file doesn't exist or can't be loaded, continue without it
+    // (this is not an error - config files are optional)
+  }
+
+  // Merge config file with CLI args (CLI args take precedence)
+  const mergedConfig = mergeConfigWithCliArgs(fileConfig, cliArgs);
+
+  // Ensure required fields are present
+  if (!mergedConfig.command) {
+    throw new Error('Command is required (detect, report, or help)');
+  }
+  if (!mergedConfig.adapter) {
+    throw new Error('Adapter configuration is required');
+  }
+  if (!mergedConfig.embedding) {
+    throw new Error('Embedding provider configuration is required');
+  }
+
+  return createCli(mergedConfig as CliConfig);
+}
+
+// Re-export config utilities
+export {
+  discoverConfigFile,
+  discoverAndLoadConfig,
+  validateAndGetConfig,
+  ConfigValidationError,
+} from './config/index.js';
+export type { FlakinessDetectiveConfigFile } from './config/index.js';
