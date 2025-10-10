@@ -22,6 +22,10 @@ vi.mock('@google/generative-ai', async () => {
 describe('GoogleGenAIProvider', () => {
   const mockLogger: Logger = {
     log: vi.fn(),
+    debug: vi.fn(),
+    info: vi.fn(),
+    warn: vi.fn(),
+    error: vi.fn(),
   } as unknown as Logger;
 
   // Save original env
@@ -104,6 +108,6 @@ describe('GoogleGenAIProvider', () => {
     const embeddings = await provider.generateEmbeddings(texts);
 
     expect(embeddings).toHaveLength(5);
-    expect(mockLogger.log).toHaveBeenCalledWith('Generating embeddings for 5 texts');
+    expect(mockLogger.info).toHaveBeenCalledWith('Generating embeddings for 5 texts');
   });
 });

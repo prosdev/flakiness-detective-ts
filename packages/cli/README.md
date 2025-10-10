@@ -324,6 +324,70 @@ Override specific options:
 flakiness-detective detect --epsilon 0.2 --max-clusters 10
 ```
 
+### Example 6: Debug Mode with Detailed Logging
+
+Enable verbose/debug mode to see detailed execution information:
+
+```bash
+flakiness-detective detect \
+  --adapter playwright \
+  --adapter-path ./test-results/report.json \
+  --embedding google \
+  --api-key $GOOGLE_AI_API_KEY \
+  --verbose
+```
+
+**Debug mode output includes:**
+- Timestamped log messages
+- Execution time for each pipeline stage (fetch, pattern extraction, embedding, clustering, save)
+- API usage statistics (embedding generation counts)
+- Cluster quality metrics (sizes, common patterns)
+- Sample embedding contexts
+- Detailed batch processing information
+
+**Sample debug output:**
+```
+[2024-10-10T21:55:17.123Z] [DEBUG] Configuration: {...}
+[2024-10-10T21:55:17.125Z] [DEBUG] Creating data adapter and embedding provider...
+[2024-10-10T21:55:17.130Z] [DEBUG] Fetching failures from the last 7 days...
+[2024-10-10T21:55:17.250Z] [DEBUG] Fetched 15 failures in 0.12s
+[2024-10-10T21:55:17.251Z] [DEBUG] Extracting patterns from failures...
+[2024-10-10T21:55:17.265Z] [DEBUG] Pattern extraction completed in 0.01s
+[2024-10-10T21:55:17.266Z] [DEBUG] Generating embeddings...
+[2024-10-10T21:55:17.268Z] [DEBUG] Creating rich contexts for 15 failures...
+[2024-10-10T21:55:17.270Z] [DEBUG] Sample context (first failure): Test: should display user profile...
+[2024-10-10T21:55:17.271Z] [DEBUG] Split into 3 batches (max size: 5)
+[2024-10-10T21:55:17.272Z] [DEBUG] Processing batch 1/3 (5 texts)...
+[2024-10-10T21:55:18.450Z] [DEBUG] Batch 1 completed in 1.18s
+[2024-10-10T21:55:18.552Z] [DEBUG] Waiting 100ms before next batch...
+[2024-10-10T21:55:18.654Z] [DEBUG] Processing batch 2/3 (5 texts)...
+[2024-10-10T21:55:19.832Z] [DEBUG] Batch 2 completed in 1.18s
+[2024-10-10T21:55:19.934Z] [DEBUG] Waiting 100ms before next batch...
+[2024-10-10T21:55:20.036Z] [DEBUG] Processing batch 3/3 (5 texts)...
+[2024-10-10T21:55:21.214Z] [DEBUG] Batch 3 completed in 1.18s
+[2024-10-10T21:55:21.215Z] [DEBUG] All embeddings generated in 3.95s
+[2024-10-10T21:55:21.216Z] [DEBUG] API Usage Stats: 15 calls, 15 texts processed
+[2024-10-10T21:55:21.217Z] [DEBUG] Generated 15 embeddings in 3.95s
+[2024-10-10T21:55:21.218Z] [DEBUG] Clustering with epsilon=0.15, distance=cosine, minPoints=2...
+[2024-10-10T21:55:21.225Z] [DEBUG] Clustering completed in 0.01s
+[2024-10-10T21:55:21.226Z] [INFO] Found 2 flaky test clusters from 15 failures
+[2024-10-10T21:55:21.227Z] [DEBUG] Total pipeline execution time: 4.10s
+[2024-10-10T21:55:21.228Z] [DEBUG] Saving clusters to storage...
+[2024-10-10T21:55:21.235Z] [DEBUG] Saved 2 clusters in 0.01s
+[2024-10-10T21:55:21.236Z] [INFO] Detection complete. Found 2 flaky test cluster(s).
+[2024-10-10T21:55:21.237Z] [DEBUG] Total execution time: 4.11s
+[2024-10-10T21:55:21.238Z] [DEBUG] Cluster Statistics:
+[2024-10-10T21:55:21.239Z] [DEBUG]   Cluster 1: 8 failures, 2 common locators, 1 common matchers
+[2024-10-10T21:55:21.240Z] [DEBUG]   Cluster 2: 7 failures, 1 common locators, 2 common matchers
+```
+
+**When to use debug mode:**
+- Troubleshooting detection issues
+- Understanding performance bottlenecks
+- Monitoring API usage and costs
+- Tuning clustering parameters
+- Debugging configuration issues
+
 ## Integration with CI/CD
 
 ### GitHub Actions

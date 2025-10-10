@@ -51,6 +51,7 @@ export class FlakinessDetectiveCli {
     this.config = config;
     this.logger = createLogger({
       level: config.verbose ? 'debug' : 'info',
+      timestamps: config.verbose ?? false, // Enable timestamps in debug mode
     });
   }
 
@@ -80,9 +81,13 @@ export class FlakinessDetectiveCli {
    * Runs flakiness detection
    */
   private async runDetection(): Promise<void> {
-    this.logger.log('Starting flakiness detection...');
+    const startTime = Date.now();
+
+    this.logger.info('Starting flakiness detection...');
+    this.logger.debug(`Configuration: ${JSON.stringify(this.config, null, 2)}`);
 
     // Create data adapter and embedding provider
+    this.logger.debug('Creating data adapter and embedding provider...');
     const dataAdapter = createDataAdapter(this.config.adapter, this.logger);
     const embeddingProvider = createEmbeddingProvider(this.config.embedding, this.logger);
 
@@ -113,14 +118,32 @@ export class FlakinessDetectiveCli {
     // Output results
     await this.outputClusters(clusters);
 
-    this.logger.log(`Detection complete. Found ${clusters.length} flaky test cluster(s).`);
+    const duration = ((Date.now() - startTime) / 1000).toFixed(2);
+    this.logger.info(`Detection complete. Found ${clusters.length} flaky test cluster(s).`);
+    this.logger.debug(`Total execution time: ${duration}s`);
+
+    // Debug: Output cluster statistics
+    if (this.config.verbose && clusters.length > 0) {
+      this.logger.debug('Cluster Statistics:');
+      for (let i = 0; i < clusters.length; i++) {
+        const cluster = clusters[i];
+        this.logger.debug(
+          `  Cluster ${i + 1}: ${cluster.metadata.failureCount} failures, ` +
+            `${cluster.commonPatterns.locators.length} common locators, ` +
+            `${cluster.commonPatterns.matchers.length} common matchers`
+        );
+      }
+    }
   }
 
   /**
    * Runs report generation (fetches existing clusters)
    */
   private async runReport(): Promise<void> {
-    this.logger.log('Generating report from saved clusters...');
+    const startTime = Date.now();
+
+    this.logger.info('Generating report from saved clusters...');
+    this.logger.debug(`Max clusters to retrieve: ${this.config.maxClusters ?? 10}`);
 
     const dataAdapter = createDataAdapter(this.config.adapter, this.logger);
     const maxClusters = this.config.maxClusters ?? 10;
@@ -130,7 +153,9 @@ export class FlakinessDetectiveCli {
     // Output results
     await this.outputClusters(clusters);
 
-    this.logger.log(`Report complete. Retrieved ${clusters.length} cluster(s).`);
+    const duration = ((Date.now() - startTime) / 1000).toFixed(2);
+    this.logger.info(`Report complete. Retrieved ${clusters.length} cluster(s).`);
+    this.logger.debug(`Total execution time: ${duration}s`);
   }
 
   /**

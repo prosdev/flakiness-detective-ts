@@ -58,6 +58,10 @@ export class GoogleGenAIProvider extends BaseEmbeddingProvider {
   private genAIClient: GoogleGenAIClient | null = null;
   private embeddingModel: GoogleGenAIModel | null = null;
 
+  // API usage tracking for debug mode
+  private apiCallCount = 0;
+  private totalTextsProcessed = 0;
+
   /**
    * Creates a new GoogleGenAIProvider
    * @param config Configuration options
@@ -126,29 +130,46 @@ export class GoogleGenAIProvider extends BaseEmbeddingProvider {
       return [];
     }
 
-    this.logger.log(`Generating embeddings for ${texts.length} texts`);
+    this.logger.info(`Generating embeddings for ${texts.length} texts`);
+    this.totalTextsProcessed += texts.length;
 
     const batches: string[][] = this.createBatches(texts, this.maxBatchSize);
+    this.logger.debug(`Split into ${batches.length} batches (max size: ${this.maxBatchSize})`);
+
     const embeddings: number[][] = [];
+    const startTime = Date.now();
 
     for (let i = 0; i < batches.length; i++) {
       const batch = batches[i];
+      this.logger.debug(`Processing batch ${i + 1}/${batches.length} (${batch.length} texts)...`);
 
       try {
+        const batchStart = Date.now();
+
         // Process each batch
         const batchResult = await Promise.all(batch.map((text) => this.embedContent(text)));
 
         embeddings.push(...batchResult);
 
+        const batchDuration = ((Date.now() - batchStart) / 1000).toFixed(2);
+        this.logger.debug(`Batch ${i + 1} completed in ${batchDuration}s`);
+
         // Add a small delay between batches to avoid rate limiting
         if (i < batches.length - 1) {
+          this.logger.debug(`Waiting ${this.batchDelay}ms before next batch...`);
           await new Promise((resolve) => setTimeout(resolve, this.batchDelay));
         }
       } catch (error) {
-        this.logger.log(`Error embedding batch ${i + 1}: ${String(error)}`);
+        this.logger.error(`Error embedding batch ${i + 1}: ${String(error)}`);
         throw new Error(`Failed to generate embeddings for batch: ${error}`);
       }
     }
+
+    const totalDuration = ((Date.now() - startTime) / 1000).toFixed(2);
+    this.logger.debug(`All embeddings generated in ${totalDuration}s`);
+    this.logger.debug(
+      `API Usage Stats: ${this.apiCallCount} calls, ${this.totalTextsProcessed} texts processed`
+    );
 
     return embeddings;
   }
@@ -165,6 +186,8 @@ export class GoogleGenAIProvider extends BaseEmbeddingProvider {
     }
 
     try {
+      this.apiCallCount++;
+
       const result = await this.embeddingModel.embedContent({
         content: { parts: [{ text }] },
         taskType: this.taskType,
@@ -172,7 +195,7 @@ export class GoogleGenAIProvider extends BaseEmbeddingProvider {
 
       return result.embedding.values;
     } catch (error) {
-      this.logger.log(`Error embedding content: ${String(error)}`);
+      this.logger.error(`Error embedding content: ${String(error)}`);
       throw new Error(`Failed to embed content: ${error}`);
     }
   }

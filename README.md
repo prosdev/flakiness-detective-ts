@@ -201,7 +201,17 @@ flakiness-detective report \
   --adapter firestore \
   --output-format json \
   --output-path ./flakiness-report.json
+
+# Enable debug mode for detailed logging and performance metrics
+flakiness-detective detect \
+  --adapter playwright \
+  --adapter-path ./test-results/results.json \
+  --embedding google \
+  --api-key YOUR_API_KEY \
+  --verbose
 ```
+
+> **💡 Tip:** Use `--verbose` to enable debug mode with timestamps, execution times, API usage stats, and cluster quality metrics.
 
 ### Configuration Files
 
