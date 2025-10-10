@@ -1,6 +1,6 @@
 {
   "name": "@flakiness-detective/adapters",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Data adapters and AI providers for Flakiness Detective - Firestore, Filesystem, Google AI, and more",
   "keywords": [
     "testing",
