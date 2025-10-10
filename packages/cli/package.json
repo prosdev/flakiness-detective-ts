@@ -52,9 +52,9 @@
     "test:watch": "vitest"
   },
   "dependencies": {
-    "@flakiness-detective/core": "^0.1.0",
-    "@flakiness-detective/adapters": "^0.1.0",
-    "@flakiness-detective/utils": "^0.1.0"
+    "@flakiness-detective/core": "workspace:*",
+    "@flakiness-detective/adapters": "workspace:*",
+    "@flakiness-detective/utils": "workspace:*"
   },
   "devDependencies": {
     "typescript": "^5.3.3"

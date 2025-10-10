@@ -50,8 +50,8 @@
     "test:watch": "vitest"
   },
   "dependencies": {
-    "@flakiness-detective/core": "^0.1.0",
-    "@flakiness-detective/utils": "^0.1.0"
+    "@flakiness-detective/core": "workspace:*",
+    "@flakiness-detective/utils": "workspace:*"
   },
   "peerDependencies": {
     "@google-cloud/firestore": "^7.0.0",
