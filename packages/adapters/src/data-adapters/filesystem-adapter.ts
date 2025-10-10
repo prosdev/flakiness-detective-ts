@@ -30,7 +30,13 @@ interface SerializedFailureCluster {
     firstSeen: string; // ISO string instead of Date
     lastSeen: string; // ISO string instead of Date
     averageTimeBetweenFailures?: number;
+    failureIds: string[];
+    runIds: string[];
+    failureTimestamps: string[]; // ISO strings instead of Dates
+    errorMessages: string[];
   };
+  failurePattern?: string;
+  assertionPattern?: string;
 }
 
 /**
@@ -230,6 +236,7 @@ export class FilesystemAdapter extends BaseDataAdapter {
         ...cluster.metadata,
         firstSeen: cluster.metadata.firstSeen.toISOString(),
         lastSeen: cluster.metadata.lastSeen.toISOString(),
+        failureTimestamps: cluster.metadata.failureTimestamps.map((t) => t.toISOString()),
       },
     }));
   }
@@ -246,6 +253,10 @@ export class FilesystemAdapter extends BaseDataAdapter {
         ...item.metadata,
         firstSeen: new Date(item.metadata.firstSeen),
         lastSeen: new Date(item.metadata.lastSeen),
+        failureIds: item.metadata.failureIds || [],
+        runIds: item.metadata.runIds || [],
+        failureTimestamps: (item.metadata.failureTimestamps || []).map((t: string) => new Date(t)),
+        errorMessages: item.metadata.errorMessages || [],
       },
     }));
   }

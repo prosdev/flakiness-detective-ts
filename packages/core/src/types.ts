@@ -23,6 +23,12 @@ export interface TestFailureMetadata {
   matcher?: string;
   timeout?: number;
   framework?: string;
+  // Playwright assertion details
+  actualValue?: string;
+  expectedValue?: string;
+  // Run tracking
+  runId?: string; // Extracted from reportLink (e.g., GitHub Actions run ID)
+  reportLink?: string;
 }
 
 /**
@@ -51,7 +57,15 @@ export interface FailureCluster {
     firstSeen: Date;
     lastSeen: Date;
     averageTimeBetweenFailures?: number;
+    // Enhanced tracking for detailed lookup
+    failureIds: string[]; // Document IDs for detailed lookup
+    runIds: string[]; // GitHub run IDs (more persistent than URLs)
+    failureTimestamps: Date[]; // When each failure occurred
+    errorMessages: string[]; // Truncated error messages for analysis
   };
+  // Pattern summaries
+  failurePattern?: string; // Human-readable failure pattern description
+  assertionPattern?: string; // Playwright assertion pattern (e.g., "toContainText on locator")
 }
 
 /**
@@ -61,6 +75,8 @@ export interface ClusteringOptions {
   epsilon: number;
   minPoints: number;
   minClusterSize: number;
+  distance?: 'euclidean' | 'cosine'; // Distance metric for clustering
+  maxClusters?: number; // Maximum number of clusters to return (default: 5)
 }
 
 /**
@@ -78,9 +94,11 @@ export interface FlakinessDetectiveConfig {
  */
 export const DEFAULT_CONFIG: FlakinessDetectiveConfig = {
   clustering: {
-    epsilon: 0.3,
+    epsilon: 0.15, // Lower epsilon for cosine distance (0.3 was for Euclidean)
     minPoints: 2,
-    minClusterSize: 3,
+    minClusterSize: 2, // Lower threshold to match original sensitivity
+    distance: 'cosine', // Cosine distance is standard for embeddings
+    maxClusters: 5, // Return top 5 clusters by default
   },
   timeWindow: {
     days: 7,

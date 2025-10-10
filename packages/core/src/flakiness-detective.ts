@@ -10,6 +10,7 @@ import {
   TestFailure,
 } from './types';
 import { createRichEmbeddingContext, extractPatterns } from './utils/pattern-extraction';
+import { validateConfig, validateEmbeddings, validateFailures } from './utils/validation';
 
 /**
  * Main class for detecting flaky tests
@@ -32,6 +33,8 @@ export class FlakinessDetective {
     this.dataAdapter = dataAdapter;
     this.embeddingProvider = embeddingProvider;
     this.logger = createLogger({ level: logLevel });
+
+    // Merge config with defaults
     this.config = {
       ...DEFAULT_CONFIG,
       ...config,
@@ -44,6 +47,9 @@ export class FlakinessDetective {
         ...config.timeWindow,
       },
     };
+
+    // Validate the merged configuration
+    validateConfig(this.config);
   }
 
   /**
@@ -58,6 +64,9 @@ export class FlakinessDetective {
       return [];
     }
 
+    // Validate failures
+    validateFailures(failures);
+
     // 2. Extract patterns from failures
     const enhancedFailures = failures.map((failure) => extractPatterns(failure));
 
@@ -66,6 +75,10 @@ export class FlakinessDetective {
 
     // 4. Cluster failures based on embeddings
     const clusters = clusterFailures(embeddedFailures, this.config.clustering);
+
+    this.logger.log(
+      `Found ${clusters.length} flaky test clusters from ${failures.length} failures`
+    );
 
     // 5. Save clusters to storage
     await this.dataAdapter.saveClusters(clusters);
@@ -87,6 +100,9 @@ export class FlakinessDetective {
     const contexts = failures.map((failure) => createRichEmbeddingContext(failure));
 
     const embeddings = await this.embeddingProvider.generateEmbeddings(contexts);
+
+    // Validate embeddings
+    validateEmbeddings(embeddings);
 
     return failures.map((failure, index) => ({
       ...failure,

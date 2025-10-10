@@ -3,7 +3,7 @@ declare module 'density-clustering' {
    * DBSCAN (Density-Based Spatial Clustering of Applications with Noise)
    * Finds clusters of points in a multi-dimensional space
    */
-  export default class DBSCAN {
+  export class DBSCAN {
     /**
      * Constructor for DBSCAN clustering algorithm
      */
