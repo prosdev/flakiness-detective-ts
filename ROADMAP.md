@@ -25,10 +25,12 @@ This release represents a mature, battle-tested flakiness detection system with 
 - ✅ **Enhanced Metadata**: Captures failure IDs, run IDs, timestamps, and error messages
 - ✅ **Playwright Reporter Adapter**: Direct JSON report integration (no custom reporter needed)
 - ✅ **Comprehensive CLI**: Full command-line interface with detect/report commands
+- ✅ **Configuration File Support**: `.flakinessrc.json`, `.js`, `.ts`, and `package.json` with auto-discovery
 - ✅ **Input Validation**: Type-safe configuration and error handling
 - ✅ **Configurable Limits**: `maxClusters` option to control output size
 - ✅ **Full TypeScript Support**: Strict mode with complete type definitions
-- ✅ **Extensive Testing**: 46 passing tests with E2E coverage
+- ✅ **Extensive Testing**: 93 passing tests with E2E coverage
+- ✅ **Comprehensive Documentation**: README files for all packages with examples and guides
 
 ## Planned Features
 
@@ -70,38 +72,6 @@ This release represents a mature, battle-tested flakiness detection system with 
 - Severity scoring based on impact
 
 ### 🔧 Medium Priority
-
-#### Configuration File Support
-
-**Status**: Planned  
-**Description**: Support for configuration files to simplify setup
-
-- `.flakinessrc.json` - JSON configuration
-- `.flakinessrc.js` - JavaScript configuration
-- `flakiness-detective.config.ts` - TypeScript configuration
-- Environment variable substitution
-- Multiple environment profiles (dev, staging, prod)
-
-**Example**:
-
-```json
-{
-  "timeWindow": { "days": 7 },
-  "adapter": {
-    "type": "firestore",
-    "projectId": "${GOOGLE_CLOUD_PROJECT_ID}",
-    "collections": {
-      "failures": "individual_test_runs",
-      "clusters": "flaky_clusters"
-    }
-  },
-  "clustering": {
-    "epsilon": 0.15,
-    "distance": "cosine",
-    "maxClusters": 5
-  }
-}
-```
 
 #### Debug Mode
 
@@ -287,8 +257,8 @@ flakiness-detective detect --debug --output-path debug-results.json
 
 ### Developer Experience
 
+- [x] Configuration file support (`.flakinessrc.json`, `.js`, `.ts`, `package.json`)
 - [ ] Interactive CLI prompts for configuration
-- [ ] Configuration file support (`.flakinessrc.json`)
 - [ ] Better error messages with actionable suggestions
 - [ ] Debug mode with detailed logging
 
@@ -325,8 +295,9 @@ Have ideas for features not listed here? We'd love to hear from you!
 - Core detection engine with DBSCAN clustering
 - Multiple data adapters (Firestore, Filesystem, Playwright, In-Memory)
 - Google Generative AI provider
-- CLI interface
-- Comprehensive documentation
+- CLI interface with config file support
+- Comprehensive documentation with package READMEs
+- Automated link validation in pre-commit hooks
 
 ---
 
