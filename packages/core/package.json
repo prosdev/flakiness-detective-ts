@@ -1,6 +1,6 @@
 {
   "name": "@flakiness-detective/core",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Core detection engine for identifying flaky tests using AI embeddings and DBSCAN clustering",
   "keywords": [
     "testing",

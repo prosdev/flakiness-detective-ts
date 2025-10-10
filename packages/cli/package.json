@@ -1,6 +1,6 @@
 {
   "name": "@flakiness-detective/cli",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Command-line interface for Flakiness Detective - Detect and analyze flaky tests from the terminal",
   "keywords": [
     "testing",
