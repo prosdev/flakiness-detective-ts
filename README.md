@@ -1,10 +1,22 @@
 # Flakiness Detective
 
+[![npm version](https://img.shields.io/npm/v/@flakiness-detective/core.svg)](https://www.npmjs.com/package/@flakiness-detective/core)
 [![Node.js](https://img.shields.io/badge/node-%3E%3D22-brightgreen.svg)](https://nodejs.org/)
 [![pnpm](https://img.shields.io/badge/pnpm-8.15.4-orange.svg)](https://pnpm.io/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
 An AI-powered test flakiness detection and analysis tool that helps identify and resolve flaky tests in your CI/CD pipeline using semantic embeddings and density-based clustering.
+
+## 📦 Packages
+
+This monorepo contains the following published packages:
+
+| Package | Version | Description |
+|---------|---------|-------------|
+| [@flakiness-detective/core](./packages/core) | [![npm](https://img.shields.io/npm/v/@flakiness-detective/core.svg)](https://www.npmjs.com/package/@flakiness-detective/core) | Core detection engine with DBSCAN clustering |
+| [@flakiness-detective/adapters](./packages/adapters) | [![npm](https://img.shields.io/npm/v/@flakiness-detective/adapters.svg)](https://www.npmjs.com/package/@flakiness-detective/adapters) | Data adapters and AI providers |
+| [@flakiness-detective/cli](./packages/cli) | [![npm](https://img.shields.io/npm/v/@flakiness-detective/cli.svg)](https://www.npmjs.com/package/@flakiness-detective/cli) | Command-line interface |
+| [@flakiness-detective/utils](./packages/utils) | [![npm](https://img.shields.io/npm/v/@flakiness-detective/utils.svg)](https://www.npmjs.com/package/@flakiness-detective/utils) | Shared utilities and logger |
 
 ## ✨ Key Features
 
@@ -88,13 +100,22 @@ flakiness-detective-ts/
 
 ## 🚀 Quick Start
 
-### Prerequisites
-
-- [Node.js](https://nodejs.org/) v22 LTS or higher
-- [PNPM](https://pnpm.io/) v8 or higher
-- Google Generative AI API key (for production embeddings)
-
 ### Installation
+
+#### Option 1: Install from npm (Recommended)
+
+```bash
+# Install core packages
+pnpm add @flakiness-detective/core @flakiness-detective/adapters
+
+# Install peer dependencies (if using Firestore and Google AI)
+pnpm add @google-cloud/firestore @google/generative-ai
+
+# Or install CLI globally
+pnpm add -g @flakiness-detective/cli
+```
+
+#### Option 2: Development Setup
 
 ```bash
 # Clone the repository
@@ -107,6 +128,12 @@ pnpm install
 # Build all packages
 pnpm build
 ```
+
+### Prerequisites
+
+- [Node.js](https://nodejs.org/) v22 LTS or higher
+- [PNPM](https://pnpm.io/) v8 or higher
+- Google Generative AI API key (for production embeddings)
 
 ### Basic Usage
 
