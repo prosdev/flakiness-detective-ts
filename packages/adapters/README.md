@@ -232,6 +232,205 @@ GOOGLE_APPLICATION_CREDENTIALS=/path/to/service-account.json
 GOOGLE_CLOUD_PROJECT_ID=your-project-id
 ```
 
+## Custom Schema Integration
+
+If you have an existing test reporter writing to Firestore with a custom schema, you can integrate it with Flakiness Detective using custom field mapping.
+
+### Use Case
+
+You already have a Playwright reporter (or other test framework) that writes test results to Firestore. Instead of changing your reporter, you can configure Flakiness Detective to read from your existing collection.
+
+### Configuration
+
+```typescript
+import { createDataAdapter } from '@flakiness-detective/adapters';
+import * as admin from 'firebase-admin';
+
+admin.initializeApp({
+  projectId: process.env.GOOGLE_CLOUD_PROJECT,
+});
+
+const adapter = createDataAdapter({
+  type: 'firestore',
+  firestoreDb: admin.firestore(),
+  failuresCollection: 'your_test_failures',  // Your existing collection
+  clustersCollection: 'flaky_clusters',      // Where to write results
+  customSchema: {
+    fieldMapping: {
+      // Map your fields to Flakiness Detective format
+      id: 'yourIdField',
+      testTitle: 'yourTitleField',
+      testFile: 'yourFileField',          // Optional, uses dot notation for nested
+      errorMessage: 'yourErrorField',      // Can be nested: 'error.message'
+      errorStack: 'yourStackField',        // Optional
+      timestamp: 'yourTimestampField',
+      metadata: {
+        // Additional metadata fields to track
+        runId: 'yourRunIdField',
+        reportLink: 'yourLinkField',
+        duration: 'yourDurationField',
+        // ... any other custom fields
+      },
+    },
+    // Optional: Filter to only analyze failures
+    failureFilter: {
+      field: 'status',
+      operator: '==',
+      value: 'failed',
+    },
+  },
+}, logger);
+```
+
+### Nested Field Mapping
+
+Use dot notation to access nested fields:
+
+```json
+{
+  "testId": "TC001",
+  "info": {
+    "title": "should display profile",
+    "file": "tests/profile.spec.ts"
+  },
+  "error": {
+    "message": "Element not found",
+    "details": {
+      "locator": "button[name='Profile']"
+    }
+  }
+}
+```
+
+Map it like:
+```typescript
+fieldMapping: {
+  id: 'testId',
+  testTitle: 'info.title',
+  testFile: 'info.file',
+  errorMessage: 'error',  // Will extract structured error
+  timestamp: 'runTime',
+}
+```
+
+### Structured Error Objects
+
+If your error field is an object (common in Playwright reporters):
+
+```json
+{
+  "errorMessage": {
+    "message": "Element not found",
+    "matcher": "toBeVisible",
+    "expected": "visible",
+    "actual": "hidden",
+    "locator": "role=button",
+    "snippet": ["line 1", "line 2"]
+  }
+}
+```
+
+The adapter will automatically:
+- Extract `message`, `matcher`, `expected`, `actual`, `locator`
+- Build a rich error message with all details
+- Use `snippet` array as the error stack
+
+### Filter Operators
+
+Supported operators for `failureFilter`:
+
+- `'=='` - Equal to
+- `'!='` - Not equal to
+- `'<'`, `'<='`, `'>'`, `'>='` - Comparison
+- `'in'` - Value in array: `{ field: 'status', operator: 'in', value: ['failed', 'timedOut'] }`
+- `'not-in'` - Value not in array
+- `'array-contains'` - Array contains value
+
+### Complete Example
+
+```typescript
+// detect-flakiness.ts
+import { FlakinessDetective } from '@flakiness-detective/core';
+import { createDataAdapter, createEmbeddingProvider } from '@flakiness-detective/adapters';
+import { createLogger } from '@flakiness-detective/utils';
+import * as admin from 'firebase-admin';
+
+admin.initializeApp();
+const logger = createLogger({ level: 'info' });
+
+const dataAdapter = createDataAdapter({
+  type: 'firestore',
+  firestoreDb: admin.firestore(),
+  failuresCollection: 'individual_test_runs',
+  customSchema: {
+    fieldMapping: {
+      id: 'testCaseId',
+      testTitle: 'title',
+      testFile: 'errorMessage.location.file',
+      errorMessage: 'errorMessage',
+      timestamp: 'runTimestamp',
+      metadata: {
+        projectName: 'projectName',
+        runId: 'buildId',
+        reportLink: 'reportLink',
+        duration: 'durationMs',
+      },
+    },
+    failureFilter: {
+      field: 'status',
+      operator: 'in',
+      value: ['failed', 'timedOut'],
+    },
+  },
+}, logger);
+
+const embeddingProvider = createEmbeddingProvider({
+  type: 'google',
+  apiKey: process.env.GOOGLE_AI_API_KEY,
+}, logger);
+
+const detective = new FlakinessDetective(
+  dataAdapter,
+  embeddingProvider,
+  { timeWindow: { days: 7 } },
+  'info'
+);
+
+const clusters = await detective.detect();
+console.log(`Found ${clusters.length} flaky patterns`);
+```
+
+### Using with CLI
+
+Create `.flakinessrc.json`:
+
+```json
+{
+  "adapter": {
+    "type": "firestore",
+    "failuresCollection": "your_collection",
+    "customSchema": {
+      "fieldMapping": {
+        "id": "yourIdField",
+        "testTitle": "yourTitleField",
+        "errorMessage": "yourErrorField",
+        "timestamp": "yourTimestampField"
+      },
+      "failureFilter": {
+        "field": "status",
+        "operator": "==",
+        "value": "failed"
+      }
+    }
+  },
+  "embedding": {
+    "type": "google"
+  }
+}
+```
+
+Run: `npx flakiness-detective detect --time-window 7`
+
 ## Related Packages
 
 - **@flakiness-detective/core** - Core detection engine ([docs](../core/README.md))
