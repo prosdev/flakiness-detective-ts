@@ -4,89 +4,233 @@
 [![pnpm](https://img.shields.io/badge/pnpm-8.15.4-orange.svg)](https://pnpm.io/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-An AI-powered test flakiness detection and analysis tool that helps identify and resolve flaky tests in your CI/CD pipeline.
+An AI-powered test flakiness detection and analysis tool that helps identify and resolve flaky tests in your CI/CD pipeline using semantic embeddings and density-based clustering.
 
-## Features
+## ✨ Key Features
 
-### Flakiness Detection
-- 🤖 AI-powered embeddings for semantic test failure analysis
-- 🔍 Density-based clustering (DBSCAN) to identify failure patterns
-- ⏰ Configurable time windows for failure analysis
-- 🔄 Framework-agnostic design with adapters for different test runners
-- 📊 Visualization tools for failure analysis and reporting
+### 🔍 Advanced Flakiness Detection
+- **AI-Powered Analysis**: Uses semantic embeddings to understand test failure patterns beyond simple text matching
+- **DBSCAN Clustering**: Groups similar failures using density-based clustering with configurable distance metrics (cosine/euclidean)
+- **Rich Pattern Extraction**: Automatically extracts patterns from Playwright error messages including:
+  - Locators and matchers
+  - Actual vs expected values
+  - Timeouts and line numbers
+  - GitHub Actions run IDs
+  - Error snippets and stack traces
+- **Frequency Analysis**: Identifies common patterns across test failures with 50% threshold for cluster identification
+- **Deterministic Cluster IDs**: Stable, reproducible cluster identifiers for tracking over time
 
-### Technical Stack
-- 📦 [PNPM](https://pnpm.io/) for fast, disk-efficient package management
-- 🏎️ [Turborepo](https://turbo.build/repo) for high-performance build system
-- 🔍 [Biome](https://biomejs.dev/) for fast linting and formatting
-- ⚙️ [TypeScript](https://www.typescriptlang.org/) configured with modern Node LTS settings
-- 🧪 [Vitest](https://vitest.dev/) for unit testing
-- 📝 [Commitlint](https://commitlint.js.org/) with Conventional Commits
-- 🔄 [Changesets](https://github.com/changesets/changesets) for versioning and changelogs
-- 🚀 GitHub Actions for CI/CD with npm publishing
-- 🪝 [Husky](https://typicode.github.io/husky/) for Git hooks
+### 🔌 Flexible Adapters
 
-## Project Structure
+#### Data Adapters
+- **In-Memory**: Fast, ephemeral storage for development
+- **Filesystem**: JSON-based persistence with automatic Date serialization
+- **Firestore**: Production-ready Google Cloud Firestore integration
+- **Playwright Reporter**: Direct integration with Playwright JSON reports
+
+#### Embedding Providers
+- **Google Generative AI**: Production-ready embeddings using `text-embedding-004`
+- **Mock Provider**: Fast, deterministic embeddings for testing
+
+### 📊 Configuration Options
+
+#### Clustering Configuration
+- `epsilon`: DBSCAN distance threshold (default: 0.15 for cosine)
+- `minPoints`: Minimum neighbors for core points (default: 2)
+- `minClusterSize`: Minimum failures per cluster (default: 2)
+- `distance`: Distance metric - `cosine` (default) or `euclidean`
+- `maxClusters`: Maximum clusters to return (default: 5)
+
+#### Time Window
+- `days`: Number of days to look back for failures (default: 7)
+
+### 🎯 Production-Ready
+
+- **Input Validation**: Comprehensive validation for configs and data
+- **Type Safety**: Full TypeScript support with strict mode
+- **Error Handling**: Graceful degradation and detailed error messages
+- **Testing**: Extensive unit and E2E test coverage
+- **Documentation**: Complete API documentation and examples
+
+## 📦 Project Structure
 
 ```
 flakiness-detective-ts/
-├── .changeset/          # Changesets configuration
-├── .github/             # GitHub Actions workflows
-├── .husky/              # Git hooks
-├── packages/            # All packages
+├── packages/
 │   ├── core/            # Core algorithms and interfaces
-│   ├── utils/           # Shared utilities
+│   │   ├── src/
+│   │   │   ├── flakiness-detective.ts    # Main detection orchestrator
+│   │   │   ├── types.ts                  # Core type definitions
+│   │   │   ├── clustering/
+│   │   │   │   └── dbscan.ts            # DBSCAN implementation
+│   │   │   └── utils/
+│   │   │       ├── pattern-extraction.ts # Playwright error parsing
+│   │   │       └── validation.ts        # Input validation
+│   │   └── README.md                    # Core package documentation
 │   ├── adapters/        # Data storage and AI provider adapters
-│   ├── analyzer/        # Test analysis and pattern detection
-│   ├── visualization/   # Result visualization components
-│   └── cli/             # Command-line interface
-├── biome.json           # Biome configuration
-├── commitlint.config.js # Commitlint configuration
-├── package.json         # Root package.json
-├── pnpm-workspace.yaml  # PNPM workspace config
-├── tsconfig.json        # Base TypeScript config
-├── turbo.json           # Turborepo config
-└── vitest.config.ts     # Vitest config
+│   │   ├── src/
+│   │   │   ├── data-adapters/
+│   │   │   │   ├── filesystem-adapter.ts
+│   │   │   │   ├── firestore-adapter.ts
+│   │   │   │   ├── in-memory-adapter.ts
+│   │   │   │   └── playwright-reporter-adapter.ts
+│   │   │   └── embedding-providers/
+│   │   │       ├── google-genai-provider.ts
+│   │   │       └── mock-provider.ts
+│   ├── cli/             # Command-line interface
+│   ├── utils/           # Shared utilities
+│   ├── analyzer/        # Test analysis (future)
+│   └── visualization/   # Visualization tools (future)
+├── .github/             # GitHub Actions CI/CD
+├── biome.json           # Linting and formatting config
+└── vitest.config.ts     # Test configuration
 ```
 
-## Getting Started
+## 🚀 Quick Start
 
 ### Prerequisites
 
-- [Node.js](https://nodejs.org/) (v22 LTS or higher)
-- [PNPM](https://pnpm.io/) (v8 or higher)
+- [Node.js](https://nodejs.org/) v22 LTS or higher
+- [PNPM](https://pnpm.io/) v8 or higher
+- Google Generative AI API key (for production embeddings)
 
 ### Installation
 
-1. Clone this repository
-   ```bash
-   git clone https://github.com/prosdev/flakiness-detective-ts.git
-   cd flakiness-detective-ts
-   ```
+```bash
+# Clone the repository
+git clone https://github.com/prosdev/flakiness-detective-ts.git
+cd flakiness-detective-ts
 
-2. Install dependencies
-   ```bash
-   pnpm install
-   ```
+# Install dependencies
+pnpm install
 
-3. Build all packages
-   ```bash
-   pnpm build
-   ```
+# Build all packages
+pnpm build
+```
 
-### Development Workflow
+### Basic Usage
 
-#### Running Tests
+#### Using the Core Package
+
+```typescript
+import { FlakinessDetective } from '@flakiness-detective/core';
+import {
+  createDataAdapter,
+  createEmbeddingProvider,
+} from '@flakiness-detective/adapters';
+import { createLogger } from '@flakiness-detective/utils';
+
+// Create logger
+const logger = createLogger({ level: 'info' });
+
+// Create data adapter (Firestore example)
+const dataAdapter = createDataAdapter(
+  {
+    type: 'firestore',
+    firestoreDb: admin.firestore(), // Your Firestore instance
+  },
+  logger
+);
+
+// Create embedding provider
+const embeddingProvider = createEmbeddingProvider(
+  {
+    type: 'google',
+    apiKey: process.env.GOOGLE_AI_API_KEY,
+  },
+  logger
+);
+
+// Create and run detective
+const detective = new FlakinessDetective(
+  dataAdapter,
+  embeddingProvider,
+  {
+    timeWindow: { days: 7 },
+    clustering: {
+      epsilon: 0.15,
+      minPoints: 2,
+      minClusterSize: 2,
+      distance: 'cosine',
+      maxClusters: 5,
+    },
+  },
+  'info'
+);
+
+const clusters = await detective.detect();
+console.log(`Found ${clusters.length} flaky test clusters`);
+```
+
+#### Reading Playwright JSON Reports
+
+```typescript
+import { PlaywrightReporterAdapter } from '@flakiness-detective/adapters';
+import { createLogger } from '@flakiness-detective/utils';
+
+const logger = createLogger({ level: 'info' });
+
+// Create adapter pointing to Playwright JSON report
+const adapter = new PlaywrightReporterAdapter(
+  {
+    reportPath: './test-results/results.json',
+    runId: process.env.GITHUB_RUN_ID,
+    reportLink: `https://github.com/org/repo/actions/runs/${process.env.GITHUB_RUN_ID}`,
+  },
+  logger
+);
+
+// Fetch failures from the last 7 days
+const failures = await adapter.fetchFailures(7);
+console.log(`Found ${failures.length} test failures`);
+```
+
+#### Using CLI (Coming Soon)
+
+```bash
+# Detect flakiness from Playwright reports
+flakiness-detective detect \
+  --adapter playwright \
+  --adapter-path ./test-results/results.json \
+  --embedding google \
+  --api-key YOUR_API_KEY \
+  --max-clusters 10
+
+# Generate report from saved clusters
+flakiness-detective report \
+  --adapter firestore \
+  --output-format json \
+  --output-path ./flakiness-report.json
+```
+
+## 📘 Documentation
+
+- **[Core Package README](packages/core/README.md)**: Complete guide to the core package, including:
+  - Detailed configuration options
+  - Playwright-specific examples
+  - Pattern extraction details
+  - API reference
+  - Migration guide from internal implementation
+- **[AGENTS.md](AGENTS.md)**: Repository structure and monorepo guidelines
+- **[CLAUDE.md](CLAUDE.md)**: AI assistant configuration and project context
+- **[CONTRIBUTING.md](CONTRIBUTING.md)**: How to contribute to this project
+
+## 🔧 Development
+
+### Running Tests
 
 ```bash
 # Run all tests
 pnpm test
 
 # Run tests in watch mode
-pnpm -F "@flakiness-detective/core" test:watch
+pnpm test:watch
+
+# Run tests for a specific package
+cd packages/core && pnpm test
 ```
 
-#### Linting and Formatting
+### Linting and Formatting
 
 ```bash
 # Lint all packages
@@ -94,97 +238,176 @@ pnpm lint
 
 # Format all packages
 pnpm format
+
+# Type check
+pnpm typecheck
 ```
 
-#### Building
+### Building
 
 ```bash
 # Build all packages
 pnpm build
 
-# Build a specific package
+# Build specific package
 pnpm -F "@flakiness-detective/core" build
+
+# Clean build outputs
+pnpm clean
 ```
 
-### Making Changes
+### Package Development
 
-1. Create a new branch
+```bash
+# Watch mode for a package
+pnpm -F "@flakiness-detective/core" dev
+
+# Add a dependency to a package
+cd packages/core
+pnpm add package-name
+```
+
+## 🏗️ Architecture
+
+### Detection Pipeline
+
+1. **Fetch Failures**: Data adapter retrieves test failures from the last N days
+2. **Extract Patterns**: Parse error messages, stack traces, and metadata
+3. **Generate Embeddings**: Convert rich context into vector representations
+4. **Cluster Failures**: Group similar failures using DBSCAN
+5. **Analyze Clusters**: Calculate frequency thresholds and identify patterns
+6. **Persist Results**: Save clusters with deterministic IDs for tracking
+
+### Key Components
+
+#### FlakinessDetective
+Main orchestrator that runs the detection pipeline end-to-end.
+
+#### Data Adapters
+Pluggable storage backends implementing the `DataAdapter` interface:
+- `fetchFailures(days)`: Retrieve test failures
+- `saveClusters(clusters)`: Persist cluster results
+- `fetchClusters(limit)`: Retrieve saved clusters
+
+#### Embedding Providers
+AI services implementing the `EmbeddingProvider` interface:
+- `generateEmbeddings(contexts)`: Convert text to vector embeddings
+
+#### Pattern Extraction
+Parses Playwright error messages to extract:
+- Structured error maps (actual, expected, locator, matcher, timeout)
+- Assertion details from code snippets
+- GitHub Actions run IDs from report links
+- Line numbers, error snippets, and stack traces
+
+## 🧪 Testing
+
+This project has comprehensive test coverage:
+
+- **Unit Tests**: Individual functions and utilities
+- **Integration Tests**: Data adapters and embedding providers
+- **E2E Tests**: Full detection pipeline with mock data
+
+Test files follow the pattern `*.test.ts` and are located next to source files.
+
+## 📊 Example Output
+
+### Cluster Structure
+
+```typescript
+{
+  id: "2024-W42-0",
+  failureCount: 15,
+  failurePattern: "Locator(role=button[name='Submit']) (75%)",
+  assertionPattern: "toBeVisible on role=button[name='Submit'] (5000ms timeout) (80%)",
+  metadata: {
+    failureCount: 15,
+    firstSeen: "2024-10-14T08:30:00Z",
+    lastSeen: "2024-10-20T14:22:00Z",
+    failureIds: ["test-1", "test-2", ...],
+    runIds: ["123456", "123457", ...],
+    failureTimestamps: [...],
+    errorMessages: [
+      "Locator(role=button[name='Submit']) failed: locator.click: Timeout 5000ms exceeded...",
+      ...
+    ]
+  },
+  commonPatterns: {
+    filePaths: ["tests/checkout.spec.ts"],
+    lineNumbers: [45, 46],
+    locators: ["role=button[name='Submit']"],
+    matchers: ["toBeVisible"],
+    timeouts: [5000]
+  }
+}
+```
+
+## 🔄 CI/CD
+
+### GitHub Actions Workflows
+
+- **CI Workflow**: Runs on every push and PR
+  - Installs dependencies
+  - Lints code (Biome)
+  - Builds packages (TypeScript)
+  - Type checks
+  - Runs tests (Vitest)
+
+- **Release Workflow**: Runs after CI succeeds on main
+  - Uses Changesets for version management
+  - Publishes to npm (when packages are not private)
+
+## 📝 Making Changes
+
+1. Create a feature branch
    ```bash
    git checkout -b feature/my-feature
    ```
 
-2. Make your changes
-
-3. Commit your changes using conventional commits
+2. Make your changes following [Conventional Commits](https://www.conventionalcommits.org/)
    ```bash
-   git commit -m "feat: add new feature"
+   git commit -m "feat(core): add new clustering algorithm"
    ```
 
-4. Add a changeset to document your changes
+3. Add a changeset
    ```bash
    pnpm changeset
    ```
 
-5. Push your branch and create a pull request
-
-### Release Process
-
-Releasing is handled automatically through GitHub Actions when changes are merged to the main branch:
-
-1. The workflow runs tests, type checking, and builds to ensure quality
-2. Changesets creates a PR to bump versions and update changelogs
-3. When the PR is merged, packages are published to npm
-
-#### Setting Up npm Publishing
-
-By default, all packages are marked as `"private": true` to prevent accidental publishing. To publish packages to npm:
-
-1. In the package's `package.json`, change `"private": true` to `"private": false`
-2. Add a `publishConfig` section:
-   ```json
-   "publishConfig": {
-     "access": "public"
-   }
+4. Push and create a PR
+   ```bash
+   git push origin feature/my-feature
    ```
-3. Generate an npm access token with publish permissions from [npmjs.com](https://www.npmjs.com/settings/~/tokens)
-4. Add the token as a repository secret named `NPM_TOKEN` in GitHub (Settings → Secrets and variables → Actions)
-5. Ensure your package names are unique in the npm registry or use a scoped package name
 
-**Note:** The release workflow only runs after the CI workflow succeeds on the `main` branch.
+## 🚀 Publishing to npm
 
-## Working with this Monorepo
+By default, all packages are `"private": true`. To publish:
 
-### Adding a New Package
+1. Set `"private": false` in package.json
+2. Add `"publishConfig": { "access": "public" }`
+3. Add `NPM_TOKEN` secret in GitHub
+4. Merge changeset PR to publish
 
-1. Create a new folder in the `packages` directory
-2. Add a `package.json` with appropriate dependencies
-3. Add a `tsconfig.json` that extends from the root
-4. Update root `tsconfig.json` with path mappings for the new package
+## 🤝 Contributing
 
-### Package Interdependencies
+We welcome contributions! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
-Packages can depend on each other using the workspace protocol:
-
-```json
-"dependencies": {
-  "@flakiness-detective/core": "workspace:*"
-}
-```
-
-## Versioning
-
-This template follows [Semantic Versioning](https://semver.org/) at the repository level:
-
-- **Git tags**: `v1.0.0`, `v1.1.0`, `v2.0.0` (for template releases)
-- **Package versions**: Remain at `0.1.0` by default (customize after cloning)
-
-**Version bumps:**
-- **MAJOR**: Breaking changes to template structure or tooling
-- **MINOR**: New features, examples, or improvements
-- **PATCH**: Bug fixes, documentation updates
-
-See [AGENTS.md](AGENTS.md) for detailed versioning strategy and [CLAUDE.md](CLAUDE.md) for AI agent configuration.
-
-## License
+## 📄 License
 
 [MIT](LICENSE)
+
+## 🙏 Acknowledgments
+
+This project is based on an internal implementation developed at Lytics for detecting flaky Playwright tests in CI/CD pipelines. It has been open-sourced and enhanced with:
+
+- Pluggable adapter architecture
+- Multiple distance metrics
+- Enhanced pattern extraction
+- Comprehensive testing
+- Full TypeScript support
+
+## 📧 Support
+
+- 📚 Documentation: See [packages/core/README.md](packages/core/README.md)
+- 🐛 Issues: [GitHub Issues](https://github.com/prosdev/flakiness-detective-ts/issues)
+- 💬 Discussions: [GitHub Discussions](https://github.com/prosdev/flakiness-detective-ts/discussions)

@@ -22,6 +22,7 @@ export interface TestFailureMetadata {
   locator?: string;
   matcher?: string;
   timeout?: number;
+  duration?: number; // Test duration in milliseconds
   framework?: string;
   // Playwright assertion details
   actualValue?: string;
