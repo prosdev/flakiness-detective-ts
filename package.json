@@ -22,6 +22,7 @@
     "clean-dist": "pnpm exec tsc -b --clean",
     "format": "turbo format",
     "typecheck": "turbo typecheck",
+    "validate:links": "tsx scripts/check-links.ts",
     "prepare": "husky",
     "lint-staged": "biome check --apply --no-errors-on-unmatched --files",
     "changeset": "changeset",
@@ -37,6 +38,7 @@
     "@types/node": "^24.7.0",
     "@vitest/coverage-v8": "^1.2.1",
     "husky": "^9.0.11",
+    "tsx": "^4.20.6",
     "turbo": "^1.11.3",
     "typescript": "^5.3.3",
     "vitest": "^1.2.1"
