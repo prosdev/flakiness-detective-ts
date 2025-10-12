@@ -1,0 +1,156 @@
+{
+  $schema: "https://docs.renovatebot.com/renovate-schema.json",
+
+  // ============================================================================
+  // BASE CONFIGURATION
+  // ============================================================================
+  extends: [
+    "config:recommended", // Renovate's recommended defaults
+    ":semanticCommits", // Use conventional commits
+    "helpers:pinGitHubActionDigests", // Pin actions with SHA
+  ],
+
+  baseBranches: ["main"],
+  rangeStrategy: "bump", // Always update to latest
+  dependencyDashboard: true, // Create GitHub issue for overview
+
+  // ============================================================================
+  // SCHEDULING
+  // ============================================================================
+  schedule: ["after 10pm and before 5am every weekday", "every weekend"],
+  prConcurrentLimit: 3, // Conservative for open source
+  prHourlyLimit: 2,
+
+  // ============================================================================
+  // AUTOMERGE (Conservative for Open Source)
+  // ============================================================================
+  packageRules: [
+    // Automerge dev dependencies (safe for tooling)
+    {
+      matchDepTypes: ["devDependencies"],
+      matchUpdateTypes: ["minor", "patch"],
+      automerge: true,
+      platformAutomerge: true,
+    },
+
+    // Automerge GitHub Actions (safe, pinned with SHA)
+    {
+      matchManagers: ["github-actions"],
+      automerge: true,
+      platformAutomerge: true,
+    },
+
+    // DON'T automerge production deps (need manual review)
+    {
+      matchDepTypes: ["dependencies", "peerDependencies"],
+      automerge: false,
+    },
+
+    // ============================================================================
+    // GROUPING (Keep PRs manageable)
+    // ============================================================================
+
+    // Group all non-major updates
+    {
+      matchUpdateTypes: ["minor", "patch"],
+      groupName: "all non-major dependencies",
+      groupSlug: "all-minor-patch",
+    },
+
+    // Group TypeScript ecosystem
+    {
+      matchPackagePatterns: ["^typescript", "^@types/"],
+      groupName: "TypeScript",
+      groupSlug: "typescript",
+    },
+
+    // Group Biome (linting/formatting)
+    {
+      matchPackagePatterns: ["^@biomejs/"],
+      groupName: "Biome",
+      groupSlug: "biome",
+    },
+
+    // Group testing tools
+    {
+      matchPackagePatterns: ["^vitest", "^@vitest/"],
+      groupName: "Vitest",
+      groupSlug: "vitest",
+    },
+
+    // Group monorepo tools
+    {
+      matchPackagePatterns: ["^@changesets/", "^turbo"],
+      groupName: "Monorepo tooling",
+      groupSlug: "monorepo-tools",
+    },
+
+    // Group Next.js (for website package)
+    {
+      matchPackagePatterns: ["^next", "^react", "^react-dom"],
+      matchPaths: ["packages/website/**"],
+      groupName: "Next.js",
+      groupSlug: "nextjs",
+    },
+
+    // Group Firebase/Firestore
+    {
+      matchPackagePatterns: ["^@google-cloud/firestore", "^firebase-admin"],
+      groupName: "Firebase",
+      groupSlug: "firebase",
+    },
+
+    // Group AI/Embeddings providers
+    {
+      matchPackagePatterns: ["^@google/generative-ai"],
+      groupName: "AI/Embeddings",
+      groupSlug: "ai-embeddings",
+    },
+
+    // ============================================================================
+    // SPECIAL HANDLING
+    // ============================================================================
+
+    // Widen peer dependencies (don't break compatibility)
+    {
+      matchDepTypes: ["peerDependencies"],
+      rangeStrategy: "widen",
+    },
+
+    // Separate major updates (need careful review)
+    {
+      matchUpdateTypes: ["major"],
+      groupName: "major dependency updates",
+      groupSlug: "major-updates",
+      automerge: false,
+    },
+  ],
+
+  // ============================================================================
+  // LOCK FILE MAINTENANCE
+  // ============================================================================
+  lockFileMaintenance: {
+    enabled: true,
+    schedule: ["before 5am on monday"],
+  },
+
+  // ============================================================================
+  // IGNORED DEPENDENCIES
+  // ============================================================================
+  ignoreDeps: [
+    "pnpm", // Manage manually (affects all contributors)
+  ],
+
+  // ============================================================================
+  // COMMIT MESSAGES
+  // ============================================================================
+  commitMessagePrefix: "chore(deps):",
+  commitMessageAction: "update",
+  commitMessageTopic: "{{depName}}",
+  commitBodyTable: true,
+
+  // ============================================================================
+  // MONOREPO SUPPORT
+  // ============================================================================
+  prCreation: "immediate", // Create PRs immediately for faster feedback
+}
