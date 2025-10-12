@@ -1,0 +1,59 @@
+{
+  "name": "@flakiness-detective/playwright-parser",
+  "version": "0.1.0",
+  "description": "Production-grade Playwright test failure parser with optional metadata tracking",
+  "keywords": [
+    "playwright",
+    "testing",
+    "parser",
+    "test-failure",
+    "error-parsing",
+    "flaky-tests",
+    "test-automation"
+  ],
+  "author": "Flakiness Detective",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/prosdev/flakiness-detective-ts.git",
+    "directory": "packages/playwright-parser"
+  },
+  "homepage": "https://flakiness-detective-ts.vercel.app/",
+  "bugs": {
+    "url": "https://github.com/prosdev/flakiness-detective-ts/issues"
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist",
+    "README.md",
+    "CHANGELOG.md"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "typecheck": "tsc --noEmit",
+    "lint": "biome lint ./src",
+    "format": "biome format --write ./src",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "peerDependencies": {
+    "@playwright/test": "^1.40.0"
+  },
+  "peerDependenciesMeta": {
+    "@playwright/test": {
+      "optional": false
+    }
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.40.0",
+    "@types/node": "^24.7.0",
+    "typescript": "^5.3.3",
+    "vitest": "^1.2.1"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "private": false
+}
