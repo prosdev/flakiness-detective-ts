@@ -9,9 +9,6 @@
       "recommended": true,
       "a11y": {
         "noSvgWithoutTitle": "off"
-      },
-      "style": {
-        "useImportType": "off"
       }
     }
   },
@@ -25,7 +22,7 @@
   "javascript": {
     "formatter": {
       "quoteStyle": "double",
-      "trailingCommas": "es5"
+      "trailingComma": "es5"
     }
   }
 }

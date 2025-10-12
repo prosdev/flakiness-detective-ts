@@ -1,12 +1,16 @@
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
 
-# Get staged files
+# Run linting (same as CI)
+echo "Running lint..."
+npm run lint
+
+# Get staged files for formatting
 files=$(git diff --cached --name-only --diff-filter=ACMR "*.ts" "*.tsx" "*.js" "*.jsx" | xargs)
 
 if [ -n "$files" ]; then
-  echo "Running Biome on staged files: $files"
-  npx biome check --apply --no-errors-on-unmatched $files
+  echo "Formatting staged files: $files"
+  npx biome format --write --no-errors-on-unmatched $files
   git add $files
 fi
 
