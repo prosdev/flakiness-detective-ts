@@ -1,6 +1,6 @@
 {
   "name": "@flakiness-detective/playwright-parser",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Production-grade Playwright test failure parser with optional metadata tracking",
   "keywords": [
     "playwright",
