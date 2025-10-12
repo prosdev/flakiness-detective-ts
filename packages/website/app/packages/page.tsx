@@ -25,6 +25,21 @@ export default function PackagesPage() {
           />
 
           <PackageSection
+            name="@flakiness-detective/playwright-parser"
+            description="Production-grade Playwright test failure parser with optional metadata tracking"
+            version="0.1.0"
+            npmUrl="https://www.npmjs.com/package/@flakiness-detective/playwright-parser"
+            githubUrl="https://github.com/prosdev/flakiness-detective-ts/tree/main/packages/playwright-parser"
+            features={[
+              'Zero-config parsing of Playwright test failures',
+              'Auto-generated deterministic test IDs',
+              'Optional annotations for enhanced tracking',
+              'Extracts matcher, locator, expected/actual values',
+              '79 passing tests with real error samples',
+            ]}
+          />
+
+          <PackageSection
             name="@flakiness-detective/adapters"
             description="Data adapters and AI providers for flexible integrations"
             version="0.1.0"

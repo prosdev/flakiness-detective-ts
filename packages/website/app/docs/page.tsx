@@ -35,6 +35,12 @@ export default function DocsPage() {
             icon="🔌"
           />
           <DocCard
+            title="Playwright Parser"
+            description="Parse Playwright test failures with optional metadata tracking"
+            href="/docs/playwright-parser"
+            icon="🎭"
+          />
+          <DocCard
             title="CLI"
             description="Use the command-line interface for CI/CD pipelines"
             href="/docs/cli"
