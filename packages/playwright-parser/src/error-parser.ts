@@ -75,9 +75,10 @@ export function parsePlaywrightError(
   // Handle waitFor Operations
   // ============================================================================
   // waitFor errors have a specific format: "waiting for <locator> to be <state>"
-  if (cleanErrorMessage.includes('waitFor') && cleanErrorMessage.includes('to be')) {
+  // This includes messages like: "Timeout exceeded.\nwaiting for X to be Y"
+  if (cleanErrorMessage.includes('waiting for') && cleanErrorMessage.includes('to be')) {
     matcher = 'waitFor';
-    const waitForMatch = cleanErrorMessage.match(/waiting for (.+?) to be (.+?)(?:\n|$)/);
+    const waitForMatch = cleanErrorMessage.match(/waiting for (.+?) to be (.+?)(?:\n|$)/i);
     if (waitForMatch) {
       locator = waitForMatch[1].trim();
       expected = waitForMatch[2].trim();
